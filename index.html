@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="version" content="15.1.0">
+<meta name="version" content="15.2.0">
 <meta name="author" content="امیررضا غلامی">
 <meta name="theme-color" content="#1E88E5">
-<title>جدولستان — نسخه ۱۵.۱.۰</title>
+<title>جدولستان — نسخه ۱۵.۲.۰</title>
 <style>
   :root {
     --bg-main: #0f172a;
@@ -17,10 +17,12 @@
     --tile-yellow: linear-gradient(135deg, #f59e0b, #d97706);
     --tile-blue: linear-gradient(135deg, #3b82f6, #2563eb);
     --tile-green: linear-gradient(135deg, #10b981, #059669);
+    --tile-red: linear-gradient(135deg, #ef4444, #dc2626);
     
     --shadow-yellow: #b45309;
     --shadow-blue: #1d4ed8;
     --shadow-green: #047857;
+    --shadow-red: #991b1b;
     
     --gold: #fbbf24;
     --danger: #ef4444;
@@ -36,7 +38,7 @@
       radial-gradient(circle at 85% 30%, rgba(16,185,129,0.15), transparent 25%);
     min-height: 100vh;
     color: var(--text-main);
-    overflow-y: auto; /* اسکرول فعال شد */
+    overflow-y: auto;
     display: flex;
     justify-content: center;
   }
@@ -44,7 +46,7 @@
   .container {
     width: 100%;
     max-width: 440px;
-    min-height: 100vh; /* حداقل به اندازه کل صفحه */
+    min-height: 100vh;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
@@ -135,9 +137,11 @@
   .cell.yellow { background: var(--tile-yellow); box-shadow: 0 2px 0 var(--shadow-yellow); }
   .cell.blue { background: var(--tile-blue); box-shadow: 0 2px 0 var(--shadow-blue); }
   .cell.green { background: var(--tile-green); box-shadow: 0 2px 0 var(--shadow-green); animation: pop 0.4s ease; }
+  .cell.red { background: var(--tile-red); box-shadow: 0 2px 0 var(--shadow-red); animation: shake 0.3s ease; }
   .cell.active { transform: scale(1.1); z-index: 5; box-shadow: 0 0 10px #fff; border: 1px solid #fff; }
   
   @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
   
   /* حباب راهنما */
   .clue-bubble {
@@ -227,7 +231,7 @@
       </div>
       <button class="add-coin" onclick="addCoins(100)">+</button>
     </div>
-    <span class="version-badge">v15.1.0</span>
+    <span class="version-badge">v15.2.0</span>
   </div>
   
   <div class="game-area">
@@ -236,7 +240,7 @@
     
     <div class="start-overlay" id="startOverlay">
       <h1 class="glowing-title">جدولستان</h1>
-      <p>جدول کلمات ۹×۹<br>مغزت رو به چالش بکش!</p>
+      <p>جدول کلمات ۹×۹<br>حواست به تقاطع کلمات باشه!</p>
       <div class="reward-box">🎁 جایزه تکمیل: <b>۵۰۰ سکه</b></div>
       <button class="btn-start" onclick="startGame()">شروع بازی</button>
       <div class="author-credit">ساخته شده توسط <b>امیررضا غلامی</b></div>
@@ -251,7 +255,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION = '15.1.0';
+const APP_VERSION = '15.2.0';
 const APP_AUTHOR = 'امیررضا غلامی';
 console.log(`جدولستان v${APP_VERSION} by ${APP_AUTHOR}`);
 
@@ -277,7 +281,7 @@ let activeCell = null;
 let coins = 500;
 let revealedCells = new Set();
 let gameRunning = false;
-let wordsCompleted = 0;
+let completedWords = new Set(); // برای ذخیره کلماتی که کامل شدن
 
 function loadCoins() {
   const c = localStorage.getItem('jadvalestan_coins_v15');
@@ -318,7 +322,7 @@ function buildGrid() {
   solution = Array.from({ length: SIZE }, () => Array(SIZE).fill(''));
   userGrid = Array.from({ length: SIZE }, () => Array(SIZE).fill(''));
   revealedCells.clear();
-  wordsCompleted = 0;
+  completedWords.clear();
   
   for (const w of WORDS) {
     for (let i = 0; i < w.word.length; i++) {
@@ -345,7 +349,14 @@ function renderBoard() {
         cell.classList.add('hidden');
       } else {
         cell.classList.add('yellow');
-        if (userGrid[r][c]) cell.textContent = userGrid[r][c];
+        if (userGrid[r][c]) {
+          cell.textContent = userGrid[r][c];
+          // اگه قبلاً درست زده شده بود، رنگش رو حفظ کن
+          if (userGrid[r][c] === solution[r][c]) {
+             cell.classList.remove('yellow');
+             cell.classList.add('blue');
+          }
+        }
         cell.onclick = () => selectCell(r, c);
       }
       boardEl.appendChild(cell);
@@ -412,11 +423,19 @@ function typeLetter(letter) {
   const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
   if (el) {
     el.textContent = letter;
-    el.classList.remove('yellow', 'green');
-    el.classList.add('blue');
+    el.classList.remove('yellow', 'green', 'blue', 'red');
+    
+    // رنگ‌بندی هوشمند: اگه حرف درست بود آبی، اگه غلط بود قرمز
+    if (letter === solution[r][c]) {
+      el.classList.add('blue');
+    } else {
+      el.classList.add('red');
+      playTone(200, 0.15, 'sawtooth', 0.1); // صدای خطا
+    }
   }
   
-  checkWord(activeCell.word);
+  // چک کردن کلمه‌هایی که این خونه رو دارن
+  checkWordsAt(r, c);
   moveNext();
 }
 
@@ -458,9 +477,11 @@ function deleteLetter() {
     const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
     if (el) {
       el.textContent = '';
-      el.classList.remove('blue', 'green');
+      el.classList.remove('blue', 'green', 'red');
       el.classList.add('yellow');
     }
+    completedWords.clear(); // بعد از پاک کردن، وضعیت کلمات رو دوباره چک می‌کنیم
+    checkAllWords();
   } else {
     const { dir, word } = activeCell;
     let pr = r, pc = c;
@@ -492,7 +513,7 @@ function useHint() {
   const el = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
   if (el) {
     el.textContent = solution[r][c];
-    el.classList.remove('yellow');
+    el.classList.remove('yellow', 'red');
     el.classList.add('green');
     setTimeout(() => {
       if (el.classList.contains('green')) { el.classList.remove('green'); el.classList.add('blue'); }
@@ -501,34 +522,80 @@ function useHint() {
   
   playTone(800, 0.15, 'sine', 0.2);
   showToast('-۵۰ سکه (راهنما)');
-  checkWord(activeCell.word);
+  checkWordsAt(r, c);
   moveNext();
 }
 
-function checkWord(word) {
-  let isCorrect = true;
-  for (let i = 0; i < word.word.length; i++) {
-    const rr = word.dir === 'H' ? word.r : word.r + i;
-    const cc = word.dir === 'H' ? word.c + i : word.c;
-    if (userGrid[rr][cc] !== solution[rr][cc]) { isCorrect = false; break; }
+// این تابع چک می‌کنه که آیا کلمه‌هایی که این خونه رو شامل میشن کامل و درست هستن یا نه
+function checkWordsAt(r, c) {
+  let wordCompletedNow = false;
+  
+  for (const w of WORDS) {
+    let inWord = false;
+    if (w.dir === 'H' && w.r === r && c >= w.c && c < w.c + w.word.length) inWord = true;
+    if (w.dir === 'V' && w.c === c && r >= w.r && r < w.r + w.word.length) inWord = true;
+    
+    if (!inWord) continue;
+    
+    // چک کن که کل کلمه پر شده و درست هست
+    let isCorrect = true;
+    for (let i = 0; i < w.word.length; i++) {
+      const rr = w.dir === 'H' ? w.r : w.r + i;
+      const cc = w.dir === 'H' ? w.c + i : w.c;
+      if (userGrid[rr][cc] !== solution[rr][cc]) { isCorrect = false; break; }
+    }
+    
+    const wordKey = `${w.word}-${w.r}-${w.c}-${w.dir}`;
+    if (isCorrect && !completedWords.has(wordKey)) {
+      completedWords.add(wordKey);
+      wordCompletedNow = true;
+      
+      // همه خونه‌های این کلمه رو سبز کن
+      for (let i = 0; i < w.word.length; i++) {
+        const rr = w.dir === 'H' ? w.r : w.r + i;
+        const cc = w.dir === 'H' ? w.c + i : w.c;
+        const el = document.querySelector(`.cell[data-r="${rr}"][data-c="${cc}"]`);
+        if (el) { el.classList.remove('yellow', 'blue', 'red'); el.classList.add('green'); }
+      }
+    }
   }
   
-  if (isCorrect) {
-    for (let i = 0; i < word.word.length; i++) {
-      const rr = word.dir === 'H' ? word.r : word.r + i;
-      const cc = word.dir === 'H' ? word.c + i : word.c;
-      const el = document.querySelector(`.cell[data-r="${rr}"][data-c="${cc}"]`);
-      if (el) { el.classList.remove('yellow', 'blue'); el.classList.add('green'); }
-    }
+  if (wordCompletedNow) {
     playTone(900, 0.1, 'sine', 0.2);
     setTimeout(() => playTone(1200, 0.15, 'sine', 0.2), 100);
-    
-    wordsCompleted++;
-    if (wordsCompleted % 2 === 0) {
-      addCoins(50);
-      showToast('🎉 ۵۰ سکه جایزه بابت کلمات!');
-    }
+    addCoins(50);
+    showToast('🎉 ۵۰ سکه جایزه بابت کلمه درست!');
     checkFullWin();
+  }
+}
+
+// بررسی مجدد همه کلمات (مثلاً بعد از پاک کردن یه حرف)
+function checkAllWords() {
+  completedWords.clear();
+  let hasChange = true;
+  
+  // چند بار اجرا میشه تا همه کلمات متقاطع بررسی بشن
+  while (hasChange) {
+    hasChange = false;
+    for (const w of WORDS) {
+      let isCorrect = true;
+      for (let i = 0; i < w.word.length; i++) {
+        const rr = w.dir === 'H' ? w.r : w.r + i;
+        const cc = w.dir === 'H' ? w.c + i : w.c;
+        if (userGrid[rr][cc] !== solution[rr][cc]) { isCorrect = false; break; }
+      }
+      const wordKey = `${w.word}-${w.r}-${w.c}-${w.dir}`;
+      if (isCorrect && !completedWords.has(wordKey)) {
+        completedWords.add(wordKey);
+        hasChange = true;
+        for (let i = 0; i < w.word.length; i++) {
+          const rr = w.dir === 'H' ? w.r : w.r + i;
+          const cc = w.dir === 'H' ? w.c + i : w.c;
+          const el = document.querySelector(`.cell[data-r="${rr}"][data-c="${cc}"]`);
+          if (el) { el.classList.remove('yellow', 'blue', 'red'); el.classList.add('green'); }
+        }
+      }
+    }
   }
 }
 
@@ -591,6 +658,7 @@ function startGame() {
   document.getElementById('startOverlay').classList.add('hidden');
   gameRunning = true;
   activeCell = null;
+  completedWords.clear();
   buildGrid();
   renderBoard();
   document.getElementById('clueBubble').classList.remove('show');
