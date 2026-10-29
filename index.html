@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="version" content="12.0.0">
+<meta name="version" content="13.0.0">
 <meta name="author" content="امیررضا غلامی">
 <meta name="theme-color" content="#f4ecd8">
-<title>وردل فارسی — نسخه ۱۲.۰.۰</title>
+<title>جدولستان — نسخه ۱۳.۰.۰</title>
 <style>
   :root {
     --paper: #f4ecd8;
@@ -15,9 +15,13 @@
     --ink: #1a1a1a;
     --ink-soft: #4a4a4a;
     --ink-faint: #8a8a8a;
-    --red: #b91c1c;
+    --black-cell: #1a1a1a;
+    --white-cell: #fdfaf0;
+    --active-cell: #fff3b0;
+    --active-border: #ca8a04;
+    --gold: #ca8a04;
     --green: #15803d;
-    --yellow: #ca8a04;
+    --red: #b91c1c;
     --border: #a89984;
   }
   
@@ -27,44 +31,41 @@
     font-family: 'Times New Roman', Georgia, Tahoma, serif;
     background: 
       repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.01) 2px, rgba(0,0,0,0.01) 3px),
-      repeating-linear-gradient(90deg, transparent 0px, transparent 2px, rgba(0,0,0,0.01) 2px, rgba(0,0,0,0.01) 3px),
       radial-gradient(circle at 50% 0%, #f9f3e0 0%, var(--paper) 50%, var(--paper-dark) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px;
+    padding: 10px;
     color: var(--ink);
     overflow-x: hidden;
     user-select: none;
     -webkit-user-select: none;
   }
   
-  /* بافت کاغذ قدیمی */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image: 
       radial-gradient(circle at 10% 20%, rgba(139,90,43,0.08) 0%, transparent 15%),
-      radial-gradient(circle at 90% 80%, rgba(139,90,43,0.06) 0%, transparent 15%),
-      radial-gradient(circle at 50% 50%, rgba(139,90,43,0.03) 0%, transparent 25%);
+      radial-gradient(circle at 90% 80%, rgba(139,90,43,0.06) 0%, transparent 15%);
     pointer-events: none;
     z-index: 0;
   }
   
   .container {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     position: relative;
     z-index: 1;
   }
   
-  /* هدر روزنامه‌ای */
+  /* هدر */
   .header {
     text-align: center;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
     border-bottom: 4px double var(--ink);
     position: relative;
   }
@@ -73,86 +74,97 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
-    font-size: 10px;
+    margin-bottom: 4px;
+    font-size: 9px;
     letter-spacing: 1px;
     color: var(--ink-soft);
     text-transform: uppercase;
-    font-family: 'Times New Roman', serif;
   }
   
   .icon-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: 1.5px solid var(--ink-soft);
     background: transparent;
     color: var(--ink);
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: 0.2s;
   }
-  
   .icon-btn:active { transform: scale(0.92); background: var(--paper-dark); }
   
-  .header-btns { display: flex; gap: 5px; }
+  .header-btns { display: flex; gap: 4px; }
   
   h1 {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 900;
     color: var(--ink);
     letter-spacing: -1px;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     font-family: 'Times New Roman', serif;
     font-style: italic;
   }
   
   .subtitle {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--ink-soft);
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    font-family: 'Times New Roman', serif;
   }
   
-  .ornament-line {
+  /* آمار */
+  .stats {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 6px 0;
-    font-size: 10px;
-    color: var(--ink-soft);
+    gap: 6px;
+    margin-bottom: 10px;
   }
   
-  .ornament-line::before,
-  .ornament-line::after {
-    content: '';
+  .stat {
+    background: var(--paper-dark);
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 2px;
+    padding: 6px;
     flex: 1;
-    height: 1px;
-    background: var(--ink-soft);
+    text-align: center;
+    box-shadow: 2px 2px 0 var(--paper-shadow);
   }
   
-  /* تخته بازی */
+  .stat-label {
+    font-size: 8px;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  
+  .stat-value {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  
+  .stat-value.gold { color: var(--gold); }
+  
+  /* تخته جدول */
   .board-wrap {
     background: var(--paper);
     border: 2px solid var(--ink);
     border-radius: 4px;
-    padding: 14px 10px;
-    box-shadow: 
-      4px 4px 0 var(--paper-shadow),
-      6px 6px 12px rgba(0,0,0,0.15);
+    padding: 8px;
+    box-shadow: 4px 4px 0 var(--paper-shadow), 6px 6px 12px rgba(0,0,0,0.15);
     position: relative;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
   .board-wrap::before {
     content: '';
     position: absolute;
-    inset: 4px;
+    inset: 3px;
     border: 1px dashed var(--border);
     border-radius: 2px;
     pointer-events: none;
@@ -160,99 +172,259 @@
   
   .board {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    max-width: 300px;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 1px;
+    aspect-ratio: 1;
+    background: var(--ink);
+    border: 2px solid var(--ink);
     margin: 0 auto;
-  }
-  
-  /* ردیف */
-  .row {
-    display: contents;
+    max-width: 360px;
   }
   
   .cell {
-    aspect-ratio: 1;
-    border: 2px solid var(--border);
-    border-radius: 2px;
+    background: var(--white-cell);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 15px;
     font-weight: 900;
     color: var(--ink);
-    background: var(--paper);
+    cursor: pointer;
+    transition: background 0.15s;
     font-family: 'Times New Roman', Tahoma, serif;
-    transition: 0.2s;
-    position: relative;
+    aspect-ratio: 1;
   }
   
-  .cell.filled {
-    border-color: var(--ink);
-    background: var(--paper);
+  .cell.black {
+    background: var(--black-cell);
+    cursor: default;
   }
   
   .cell.active {
-    border-color: var(--ink);
-    box-shadow: 0 0 0 2px rgba(26,26,26,0.2);
-    animation: cursorPulse 1s ease-in-out infinite;
+    background: var(--active-cell);
+    box-shadow: inset 0 0 0 2px var(--active-border);
   }
   
-  @keyframes cursorPulse {
-    0%, 100% { box-shadow: 0 0 0 2px rgba(26,26,26,0.2); }
-    50% { box-shadow: 0 0 0 4px rgba(26,26,26,0.1); }
+  .cell.highlight {
+    background: rgba(202,138,4,0.15);
+  }
+  
+  .cell .num {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    font-size: 8px;
+    color: var(--ink-soft);
+    font-weight: 700;
+    line-height: 1;
   }
   
   .cell.correct {
-    background: var(--green);
-    color: var(--paper);
-    border-color: var(--green);
-    animation: flipIn 0.5s ease;
+    color: var(--green);
   }
   
-  .cell.present {
-    background: var(--yellow);
-    color: var(--paper);
-    border-color: var(--yellow);
-    animation: flipIn 0.5s ease;
+  .cell.wrong {
+    color: var(--red);
   }
   
-  .cell.absent {
-    background: var(--ink-faint);
-    color: var(--paper);
-    border-color: var(--ink-faint);
-    animation: flipIn 0.5s ease;
+  .cell.revealed {
+    color: var(--ink-faint);
+    font-style: italic;
   }
   
-  @keyframes flipIn {
-    0% { transform: rotateX(0); }
-    50% { transform: rotateX(90deg); }
-    100% { transform: rotateX(0); }
+  /* صفحه‌های overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(244,236,216,0.96);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    text-align: center;
+    overflow-y: auto;
+    transition: opacity 0.4s;
+  }
+  
+  .overlay.hidden { display: none; }
+  
+  .overlay-box {
+    background: var(--paper);
+    border: 3px double var(--ink);
+    border-radius: 4px;
+    padding: 24px 20px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 6px 6px 0 var(--paper-shadow), 10px 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+    margin: auto;
+  }
+  
+  .overlay-box::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px dashed var(--border);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  
+  .overlay h2 {
+    font-size: 24px;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 900;
+  }
+  
+  .tagline {
+    font-size: 9px;
+    color: var(--ink-soft);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  
+  .overlay p {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    line-height: 1.9;
+  }
+  
+  .btn {
+    padding: 12px 28px;
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Times New Roman', Tahoma, serif;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    transition: 0.15s;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0 var(--paper-shadow);
+    margin: 4px;
+  }
+  
+  .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--paper-shadow);
+  }
+  
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+  }
+  
+  .btn-gold {
+    background: var(--gold);
+    color: var(--paper);
+    border-color: var(--gold);
+  }
+  
+  /* آمار نهایی */
+  .final-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .final-stat {
+    background: var(--paper-dark);
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 2px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  
+  .final-stat .label {
+    font-size: 8px;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  
+  .final-stat .value {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  
+  /* راهنما */
+  .clue-panel {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 3px 3px 0 var(--paper-shadow);
+    min-height: 60px;
+    position: relative;
+  }
+  
+  .clue-panel::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px dashed var(--border);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  
+  .clue-label {
+    font-size: 8px;
+    color: var(--ink-soft);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  
+  .clue-text {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  
+  .clue-info {
+    font-size: 9px;
+    color: var(--ink-faint);
+    margin-top: 4px;
   }
   
   /* کیبورد */
   .keyboard {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 8px;
   }
   
   .kb-row {
     display: flex;
-    gap: 4px;
+    gap: 3px;
     justify-content: center;
   }
   
   .key {
     flex: 1;
-    max-width: 40px;
+    max-width: 36px;
     aspect-ratio: 1;
-    border: 2px solid var(--ink-soft);
-    border-radius: 4px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 3px;
     background: var(--paper);
     color: var(--ink);
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     font-family: 'Times New Roman', Tahoma, serif;
@@ -269,176 +441,20 @@
     box-shadow: none;
   }
   
-  .key.correct {
-    background: var(--green);
-    color: var(--paper);
-    border-color: var(--green);
-  }
-  
-  .key.present {
-    background: var(--yellow);
-    color: var(--paper);
-    border-color: var(--yellow);
-  }
-  
-  .key.absent {
-    background: var(--ink-faint);
-    color: var(--paper);
-    border-color: var(--ink-faint);
-  }
-  
-  .key.wide {
-    flex: 2;
-    max-width: none;
-    font-size: 12px;
-  }
-  
-  .key.enter {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-    font-size: 12px;
-    letter-spacing: 0.5px;
-  }
-  
-  .key.enter:active { background: var(--ink-soft); }
-  
   .key.delete {
-    font-size: 18px;
-  }
-  
-  /* صفحه‌ها */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(244,236,216,0.95);
-    backdrop-filter: blur(4px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
-    text-align: center;
-    transition: opacity 0.4s;
-  }
-  
-  .overlay.hidden { display: none; }
-  
-  .overlay-box {
-    background: var(--paper);
-    border: 3px double var(--ink);
-    border-radius: 4px;
-    padding: 28px 24px;
-    max-width: 340px;
-    width: 100%;
-    box-shadow: 
-      6px 6px 0 var(--paper-shadow),
-      10px 10px 30px rgba(0,0,0,0.2);
-    position: relative;
-  }
-  
-  .overlay-box::before {
-    content: '';
-    position: absolute;
-    inset: 6px;
-    border: 1px dashed var(--border);
-    border-radius: 2px;
-    pointer-events: none;
-  }
-  
-  .overlay h2 {
-    font-size: 26px;
-    margin-bottom: 8px;
-    color: var(--ink);
-    font-family: 'Times New Roman', serif;
-    font-style: italic;
-    font-weight: 900;
-  }
-  
-  .overlay .tagline {
-    font-size: 10px;
-    color: var(--ink-soft);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-  }
-  
-  .overlay p {
-    font-size: 13px;
-    color: var(--ink-soft);
-    margin-bottom: 20px;
-    line-height: 1.9;
-    font-family: 'Times New Roman', serif;
-  }
-  
-  .btn {
-    padding: 12px 32px;
-    border: 2px solid var(--ink);
-    border-radius: 2px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: 'Times New Roman', Tahoma, serif;
-    cursor: pointer;
-    background: var(--ink);
-    color: var(--paper);
-    transition: 0.15s;
-    letter-spacing: 1px;
-    box-shadow: 3px 3px 0 var(--paper-shadow);
-  }
-  
-  .btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--paper-shadow);
-  }
-  
-  .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-    border: 2px solid var(--ink);
-  }
-  
-  /* پاسخ درست */
-  .answer-reveal {
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--green);
-    letter-spacing: 4px;
-    margin: 16px 0;
-    font-family: 'Times New Roman', serif;
-    padding: 12px;
-    border: 2px dashed var(--green);
-    border-radius: 4px;
-  }
-  
-  /* آمار نهایی */
-  .final-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .final-stat {
+    flex: 1.5;
+    max-width: none;
+    font-size: 16px;
     background: var(--paper-dark);
-    border: 1.5px solid var(--ink-soft);
-    border-radius: 2px;
-    padding: 10px 6px;
-    text-align: center;
   }
   
-  .final-stat .label {
-    font-size: 9px;
-    color: var(--ink-soft);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  
-  .final-stat .value {
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--ink);
+  .key.reveal {
+    flex: 1.5;
+    max-width: none;
+    font-size: 10px;
+    background: var(--gold);
+    color: var(--paper);
+    border-color: var(--gold);
   }
   
   /* تنظیمات */
@@ -447,7 +463,7 @@
   
   .settings-box, .about-box {
     background: var(--paper);
-    padding: 24px 20px;
+    padding: 22px 18px;
     border-radius: 4px;
     width: 100%;
     max-width: 300px;
@@ -455,42 +471,41 @@
     box-shadow: 6px 6px 0 var(--paper-shadow);
     color: var(--ink);
     position: relative;
+    margin: auto;
   }
   
   .settings-box::before, .about-box::before {
     content: '';
     position: absolute;
-    inset: 6px;
+    inset: 5px;
     border: 1px dashed var(--border);
     border-radius: 2px;
     pointer-events: none;
   }
   
   .settings-box h3, .about-box h3 {
-    margin-bottom: 18px;
-    font-size: 18px;
+    margin-bottom: 16px;
+    font-size: 17px;
     text-align: center;
     font-family: 'Times New Roman', serif;
     font-style: italic;
     font-weight: 900;
-    color: var(--ink);
   }
   
   .setting-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px dashed var(--border);
-    font-size: 13px;
-    color: var(--ink);
+    font-size: 12px;
   }
   
   .setting-row:last-of-type { border-bottom: none; }
   
   .toggle {
-    width: 46px;
-    height: 24px;
+    width: 44px;
+    height: 23px;
     background: var(--paper-dark);
     border-radius: 12px;
     position: relative;
@@ -505,8 +520,8 @@
   .toggle::after {
     content: '';
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 1px;
+    right: 1px;
     width: 17px;
     height: 17px;
     background: var(--paper);
@@ -515,75 +530,58 @@
     border: 1px solid var(--ink-soft);
   }
   
-  .toggle.on::after { right: 25px; }
+  .toggle.on::after { right: 24px; }
   
   .author-credit {
     background: var(--paper-dark);
     border: 1.5px solid var(--border);
-    padding: 12px;
+    padding: 10px;
     border-radius: 2px;
-    margin-top: 14px;
+    margin-top: 12px;
     text-align: center;
   }
   
   .author-credit .label {
-    font-size: 9px;
+    font-size: 8px;
     color: var(--ink-soft);
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   
   .author-credit .name {
     color: var(--ink);
     font-weight: 900;
-    font-size: 14px;
+    font-size: 13px;
     font-family: 'Times New Roman', serif;
     font-style: italic;
   }
   
-  /* راهنما */
-  .hint {
-    text-align: center;
-    font-size: 11px;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-    font-family: 'Times New Roman', serif;
+  /* نوار پیشرفت */
+  .progress-bar {
+    background: var(--paper-dark);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
   }
   
-  /* پیام */
-  .toast {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: var(--ink);
-    color: var(--paper);
-    padding: 10px 20px;
-    border-radius: 2px;
-    font-size: 13px;
-    font-weight: 700;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-    z-index: 200;
-    box-shadow: 3px 3px 0 var(--paper-shadow);
-  }
-  
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--green));
+    transition: width 0.4s;
+    border-radius: 3px;
   }
   
   /* نسخه */
   .version-tag {
     text-align: center;
-    font-size: 9px;
+    font-size: 8px;
     color: var(--ink-soft);
-    margin-top: 8px;
-    letter-spacing: 2px;
+    margin-top: 6px;
+    letter-spacing: 1.5px;
     opacity: 0.7;
-    font-family: 'Times New Roman', serif;
   }
   
   .version-tag b {
@@ -593,11 +591,10 @@
   
   .footer-author {
     text-align: center;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--ink-soft);
-    margin-top: 4px;
+    margin-top: 3px;
     letter-spacing: 1px;
-    font-family: 'Times New Roman', serif;
   }
   
   .footer-author b {
@@ -607,20 +604,44 @@
   
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
   }
   
   .shake { animation: shake 0.3s ease; }
   
-  /* کانفتی کاغذی */
+  /* کانفتی */
   .confetti {
     position: fixed;
-    width: 6px;
-    height: 10px;
+    width: 5px;
+    height: 9px;
     pointer-events: none;
     z-index: 150;
-    background: var(--green);
+  }
+  
+  .toast {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 16px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 200;
+    box-shadow: 3px 3px 0 var(--paper-shadow);
+    max-width: 90%;
+    text-align: center;
+  }
+  
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 </style>
 </head>
@@ -629,56 +650,73 @@
 <div class="container">
   <div class="header">
     <div class="top-bar">
-      <span>نسخه <b>۱۲.۰.۰</b></span>
+      <span>نسخه <b>۱۳.۰.۰</b></span>
       <div class="header-btns">
         <button class="icon-btn" onclick="openAbout()">ℹ️</button>
         <button class="icon-btn" onclick="openSettings()">⚙️</button>
       </div>
     </div>
-    <h1>وردل</h1>
-    <div class="subtitle">روزنامه کلمات</div>
-    <div class="ornament-line">✦ ✦ ✦</div>
+    <h1>جدولستان</h1>
+    <div class="subtitle">جدول کلمات متقاطع</div>
+  </div>
+  
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">پیشرفت</div>
+      <div class="stat-value" id="progress">۰٪</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">زمان</div>
+      <div class="stat-value" id="timer">۰:۰۰</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">رکورد</div>
+      <div class="stat-value gold" id="best">—</div>
+    </div>
+  </div>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
   </div>
   
   <div class="board-wrap" id="boardWrap">
-    <div class="hint" id="hint">یک کلمه ۵ حرفی حدس بزن</div>
     <div class="board" id="board"></div>
+  </div>
+  
+  <div class="clue-panel" id="cluePanel">
+    <div class="clue-label" id="clueLabel">راهنما</div>
+    <div class="clue-text" id="clueText">روی یک خانه کلیک کن</div>
+    <div class="clue-info" id="clueInfo"></div>
   </div>
   
   <div class="keyboard" id="keyboard"></div>
   
-  <div class="version-tag">نسخه <b>12.0.0</b> — Newspaper Edition</div>
+  <div class="version-tag">نسخه <b>13.0.0</b> — Classic Edition</div>
   <div class="footer-author">ساخته شده با ❤️ توسط <b>امیررضا غلامی</b></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- صفحه شروع -->
+<!-- شروع -->
 <div class="overlay" id="startOverlay">
   <div class="overlay-box">
-    <h2>وردل</h2>
-    <div class="tagline">روزنامه کلمات</div>
+    <h2>جدولستان</h2>
+    <div class="tagline">جدول کلمات متقاطع</div>
     <p>
-      یک کلمه ۵ حرفی حدس بزن<br>
-      🟩 سبز = درست در جای درست<br>
-      🟨 زرد = درست در جای اشتباه<br>
-      ⬛ خاکستری = در کلمه نیست
+      🧩 یک جدول ۹×۹ با کلمات فارسی<br>
+      📝 روی هر خانه کلیک کن و راهنما رو ببین<br>
+      🎯 همه کلمات رو پر کن تا برنده بشی
     </p>
     <button class="btn" onclick="startGame()">شروع بازی</button>
   </div>
 </div>
 
-<!-- صفحه برد -->
+<!-- برد -->
 <div class="overlay hidden" id="winOverlay">
   <div class="overlay-box">
-    <h2>🎉 آفرین!</h2>
-    <div class="tagline">کلمه رو پیدا کردی</div>
-    <div class="answer-reveal" id="winWord">—</div>
+    <h2>🎉 برنده شدی!</h2>
+    <div class="tagline">جدول کامل شد</div>
     <div class="final-stats">
-      <div class="final-stat">
-        <div class="label">تلاش</div>
-        <div class="value" id="winAttempts">۰</div>
-      </div>
       <div class="final-stat">
         <div class="label">زمان</div>
         <div class="value" id="winTime">۰:۰۰</div>
@@ -688,17 +726,6 @@
         <div class="value" id="winBest">۰</div>
       </div>
     </div>
-    <button class="btn" onclick="startGame()">بازی جدید</button>
-  </div>
-</div>
-
-<!-- صفحه باخت -->
-<div class="overlay hidden" id="loseOverlay">
-  <div class="overlay-box">
-    <h2>😔 نشد!</h2>
-    <div class="tagline">کلمه درست این بود</div>
-    <div class="answer-reveal" id="loseWord">—</div>
-    <p>نگران نباش، دوباره تلاش کن!</p>
     <button class="btn" onclick="startGame()">بازی جدید</button>
   </div>
 </div>
@@ -716,10 +743,10 @@
       <div class="toggle on" id="vibeToggle" onclick="toggleVibe()"></div>
     </div>
     <div class="setting-row">
-      <span>💡 راهنمای کیبورد</span>
-      <div class="toggle on" id="hintToggle" onclick="toggleHint()"></div>
+      <span>💡 راهنمای خودکار</span>
+      <div class="toggle on" id="autoHintToggle" onclick="toggleAutoHint()"></div>
     </div>
-    <button class="btn" style="margin-top:16px;width:100%;" onclick="closeSettings()">بستن</button>
+    <button class="btn" style="margin-top:14px;width:100%;" onclick="closeSettings()">بستن</button>
   </div>
 </div>
 
@@ -727,66 +754,41 @@
 <div class="overlay about-overlay" id="aboutOverlay">
   <div class="about-box">
     <h3>ℹ درباره بازی</h3>
-    <p style="font-size:12px;line-height:1.9;color:#4a4a4a;margin-bottom:16px;text-align:center;">
-      وردل فارسی<br>
-      هر روز یک کلمه جدید<br>
-      با ۶ تلاش پیدا کن
+    <p style="font-size:11px;line-height:1.9;color:#4a4a4a;margin-bottom:14px;text-align:center;">
+      جدولستان<br>
+      جدول کلمات متقاطع فارسی<br>
+      با کلمات آشنا و راهنمای ساده
     </p>
     <div class="author-credit">
       <div class="label">ساخته شده توسط</div>
       <div class="name">امیررضا غلامی</div>
     </div>
-    <p style="font-size:10px;opacity:0.6;margin-top:12px;color:#4a4a4a;">
-      نسخه <b style="color:#1a1a1a;">12.0.0 (Newspaper Edition)</b>
+    <p style="font-size:9px;opacity:0.6;margin-top:10px;color:#4a4a4a;">
+      نسخه <b style="color:#1a1a1a;">13.0.0 (Classic Edition)</b>
     </p>
-    <button class="btn" style="margin-top:12px;width:100%;" onclick="closeAbout()">بستن</button>
+    <button class="btn" style="margin-top:10px;width:100%;" onclick="closeAbout()">بستن</button>
   </div>
 </div>
 
 <script>
 // ===== اطلاعات نسخه =====
-const APP_VERSION = '12.0.0';
-const APP_BUILD = 1200;
+const APP_VERSION = '13.0.0';
+const APP_BUILD = 1300;
 const APP_AUTHOR = 'امیررضا غلامی';
-console.log(`📰 وردل فارسی v${APP_VERSION} (build ${APP_BUILD})`);
+console.log(`🧩 جدولستان v${APP_VERSION} (build ${APP_BUILD})`);
 console.log(`👨‍💻 ساخته شده توسط: ${APP_AUTHOR}`);
-console.log('📰 Newspaper Edition — نسخه روزنامه‌ای');
-
-// ===== کلمات =====
-const WORDS = [
-  'کتاب','مادر','پدر','خانه','دوست','آب','نور','ماه','خورشید','ستاره',
-  'دریا','کوه','جنگل','گل','درخت','برگ','میوه','سیب','انار','انگور',
-  'نان','آب','شیر','چای','قهوه','قند','عسل','پنیر','ماست','کره',
-  'مدرسه','معلم','درس','قلم','دفتر','کاغذ','میز','صندلی','تخته','کلاس',
-  'شهر','روستا','خیابان','کوچه','پارک','بازار','مغازه','بیمارستان','مسجد','کتابخانه',
-  'ماشین','اتوبوس','قطار','هواپیما','کشتی','دوچرخه','موتور','تاکسی','راه','جاده',
-  'دست','پا','چشم','گوش','دهان','بینی','مو','قلب','سر','صورت',
-  'شادی','غم','عشق','درد','امید','ترس','خنده','گریه','لبخند','آرامش',
-  'صبح','ظهر','عصر','شب','روز','هفته','ماه','سال','فصل','بهار',
-  'تابستان','پاییز','زمستان','باران','برف','باد','ابر','رعد','برق','رنگین',
-  'قرمز','آبی','سبز','زرد','سیاه','سفید','نارنجی','بنفش','صورتی','قهوه',
-  'گربه','سگ','اسب','گاو','گوسفند','مرغ','خروس','ماهی','پرنده','پروانه',
-  'سیب','موز','پرتقال','لیمو','هلو','گیلاس','آلبالو','توت','خرما','انجیر',
-  'موسیقی','آهنگ','ساز','پیانو','گیتار','ویولن','طبل','نی','آواز','رقص',
-  'فوتبال','والیبال','بسکتبال','شنا','دویدن','پریدن','کوهنوردی','شطرنج','بازی','ورزش'
-];
-
-const SIZE = 5;
-const MAX_ATTEMPTS = 6;
-const PERSIAN_LETTERS = ['ا','ب','پ','ت','ث','ج','چ','ح','خ','د','ذ','ر','ز','ژ','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ک','گ','ل','م','ن','و','ه','ی'];
+console.log('📰 Classic Edition — نسخه کلاسیک');
 
 // ===== تنظیمات =====
 let settings = {
   sound: true,
   vibe: true,
-  hint: true,
+  autoHint: true,
 };
 
 // ===== Audio =====
 let audioCtx = null;
-function initAudio() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}
+function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 function playTone(freq, duration = 0.1, type = 'sine', volume = 0.15) {
   if (!settings.sound) return;
   initAudio();
@@ -796,279 +798,400 @@ function playTone(freq, duration = 0.1, type = 'sine', volume = 0.15) {
   osc.frequency.value = freq;
   gain.gain.setValueAtTime(volume, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + duration);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + duration);
 }
-
 function playTypeSound() { playTone(700, 0.05, 'sine', 0.08); }
 function playDeleteSound() { playTone(300, 0.08, 'sine', 0.1); }
-function playSubmitSound() { playTone(500, 0.1, 'triangle', 0.12); }
-function playCorrectSound() { 
-  playTone(660, 0.1, 'sine', 0.15); 
-  setTimeout(() => playTone(880, 0.15, 'sine', 0.15), 100); 
-}
+function playCorrectSound() { playTone(660, 0.1, 'sine', 0.15); setTimeout(() => playTone(880, 0.15, 'sine', 0.15), 100); }
 function playWrongSound() { playTone(200, 0.2, 'sawtooth', 0.12); }
 function playWinSound() {
   [523, 659, 784, 1047, 1319].forEach((f, i) => {
     setTimeout(() => playTone(f, 0.3, 'sine', 0.18), i * 130);
   });
 }
-
-function vibrate(ms = 15) {
-  if (settings.vibe && navigator.vibrate) navigator.vibrate(ms);
-}
+function vibrate(ms = 15) { if (settings.vibe && navigator.vibrate) navigator.vibrate(ms); }
 
 // ===== ذخیره =====
-function saveSettings() { localStorage.setItem('wordle_settings', JSON.stringify(settings)); }
+function saveSettings() { localStorage.setItem('jadvalestan_settings', JSON.stringify(settings)); }
 function loadSettings() {
-  const s = localStorage.getItem('wordle_settings');
+  const s = localStorage.getItem('jadvalestan_settings');
   if (s) settings = { ...settings, ...JSON.parse(s) };
 }
-function getBest() { return parseInt(localStorage.getItem('wordle_best') || '0'); }
-function saveBest(attempts) {
+function getBest() { return parseInt(localStorage.getItem('jadvalestan_best') || '0'); }
+function saveBest(seconds) {
   const best = getBest();
-  if (best === 0 || attempts < best) {
-    localStorage.setItem('wordle_best', attempts);
+  if (best === 0 || seconds < best) {
+    localStorage.setItem('jadvalestan_best', seconds);
     return true;
   }
   return false;
 }
-function getTotalWins() { return parseInt(localStorage.getItem('wordle_wins') || '0'); }
-function addWin() { localStorage.setItem('wordle_wins', getTotalWins() + 1); }
 
 // ===== عناصر =====
 const boardEl = document.getElementById('board');
 const keyboardEl = document.getElementById('keyboard');
 const boardWrap = document.getElementById('boardWrap');
 const toastEl = document.getElementById('toast');
+const clueLabel = document.getElementById('clueLabel');
+const clueText = document.getElementById('clueText');
+const clueInfo = document.getElementById('clueInfo');
 
 // ===== وضعیت =====
-let secretWord = '';
-let currentRow = 0;
-let currentCol = 0;
-let currentGuess = [];
-let attempts = [];
+const SIZE = 9;
+let grid = [];          // ماتریس ۹×۹ — 0=سیاه، 1=سفید
+let solution = [];      // ماتریس حروف درست
+let userGrid = [];      // ماتریس حروف کاربر
+let words = [];         // لیست کلمات با موقعیت و جهت
+let cellNumbers = {};   // شماره‌گذاری خانه‌ها
+let activeCell = null;  // {r, c, dir}
 let gameRunning = false;
 let seconds = 0;
 let timerInterval = null;
-let keyStates = {}; // حرف → 'correct' | 'present' | 'absent'
+let revealedCells = new Set();
 
+// ===== داده‌های جدول =====
+// کلمات با مختصات (r, c) شروع، جهت (H=افقی، V=عمودی)
+const WORD_DATA = [
+  // افقی
+  { word: 'کتاب', r: 0, c: 0, dir: 'H', clue: 'چیزی که می‌خوانیم' },
+  { word: 'مادر', r: 0, c: 5, dir: 'H', clue: 'مهربان‌ترین زن' },
+  { word: 'دریا', r: 2, c: 0, dir: 'H', clue: 'پهنه آب شور' },
+  { word: 'گل', r: 2, c: 5, dir: 'H', clue: 'زیبا و خوشبو' },
+  { word: 'خانه', r: 4, c: 0, dir: 'H', clue: 'جای زندگی' },
+  { word: 'دوست', r: 4, c: 6, dir: 'H', clue: 'رفیق و همدل' },
+  { word: 'مدرسه', r: 6, c: 0, dir: 'H', clue: 'محل درس خواندن' },
+  { word: 'ستاره', r: 8, c: 0, dir: 'H', clue: 'می‌درخشد در آسمان' },
+  // عمودی
+  { word: 'کبوتر', r: 0, c: 0, dir: 'V', clue: 'پرنده‌ای که نامه می‌برد' },
+  { word: 'مرد', r: 0, c: 5, dir: 'V', clue: 'مذکر انسان' },
+  { word: 'کیسه', r: 0, c: 4, dir: 'V', clue: 'برای نگهداری پول' },
+  { word: 'آسمان', r: 0, c: 7, dir: 'V', clue: 'بالای سر ما' },
+  { word: 'خانه', r: 4, c: 0, dir: 'V', clue: 'سرپناه' }, // تکراری با افقی، ولی توی جدول واقعی هم پیش میاد
+  { word: 'گرگ', r: 2, c: 8, dir: 'V', clue: 'حیوان درنده جنگل' },
+];
+
+// ===== شروع =====
 function startGame() {
-  secretWord = WORDS[Math.floor(Math.random() * WORDS.length)];
-  currentRow = 0;
-  currentCol = 0;
-  currentGuess = [];
-  attempts = [];
-  keyStates = {};
-  gameRunning = true;
   seconds = 0;
+  gameRunning = true;
+  activeCell = null;
+  revealedCells = new Set();
+  clearInterval(timerInterval);
   
   document.getElementById('startOverlay').classList.add('hidden');
   document.getElementById('winOverlay').classList.add('hidden');
-  document.getElementById('loseOverlay').classList.add('hidden');
   
-  buildBoard();
+  buildGrid();
   buildKeyboard();
-  updateHint();
+  updateProgress();
+  updateBest();
   startTimer();
-  
-  console.log('کلمه مخفی:', secretWord);
 }
 
-function buildBoard() {
+function buildGrid() {
+  // ساخت جدول ۹×۹ خالی
+  grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
+  solution = Array.from({ length: SIZE }, () => Array(SIZE).fill(''));
+  userGrid = Array.from({ length: SIZE }, () => Array(SIZE).fill(''));
+  
+  // قرار دادن کلمات
+  for (const w of WORD_DATA) {
+    for (let i = 0; i < w.word.length; i++) {
+      const r = w.dir === 'H' ? w.r : w.r + i;
+      const c = w.dir === 'H' ? w.c + i : w.c;
+      if (r < SIZE && c < SIZE) {
+        grid[r][c] = 1;
+        solution[r][c] = w.word[i];
+      }
+    }
+  }
+  
+  // شماره‌گذاری
+  cellNumbers = {};
+  let num = 1;
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (grid[r][c] === 1) {
+        const startsH = w_startAt(r, c, 'H');
+        const startsV = w_startAt(r, c, 'V');
+        if (startsH || startsV) {
+          cellNumbers[`${r}-${c}`] = num++;
+        }
+      }
+    }
+  }
+  
+  // رندر جدول
+  renderBoard();
+}
+
+function w_startAt(r, c, dir) {
+  return WORD_DATA.find(w => w.r === r && w.c === c && w.dir === dir);
+}
+
+function renderBoard() {
   boardEl.innerHTML = '';
-  for (let r = 0; r < MAX_ATTEMPTS; r++) {
+  
+  for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
-      cell.id = `cell-${r}-${c}`;
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      
+      if (grid[r][c] === 0) {
+        cell.classList.add('black');
+      } else {
+        if (cellNumbers[`${r}-${c}`]) {
+          const numEl = document.createElement('span');
+          numEl.className = 'num';
+          numEl.textContent = toPersian(cellNumbers[`${r}-${c}`]);
+          cell.appendChild(numEl);
+        }
+        
+        const charEl = document.createElement('span');
+        charEl.textContent = userGrid[r][c] || '';
+        cell.appendChild(charEl);
+        
+        cell.onclick = () => selectCell(r, c);
+      }
+      
       boardEl.appendChild(cell);
     }
   }
-  highlightActiveCell();
 }
 
-function buildKeyboard() {
-  keyboardEl.innerHTML = '';
-  const rows = [
-    ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
-    ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
-    ['ظ','ط','ز','ر','ذ','د','پ','و','ژ'],
-  ];
+function selectCell(r, c) {
+  if (grid[r][c] === 0 || !gameRunning) return;
   
-  rows.forEach((row, idx) => {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'kb-row';
-    
-    if (idx === 2) {
-      const enter = document.createElement('button');
-      enter.className = 'key wide enter';
-      enter.textContent = 'ثبت';
-      enter.onclick = submitGuess;
-      rowEl.appendChild(enter);
+  playTone(500, 0.05, 'sine', 0.08);
+  vibrate(10);
+  
+  // تعیین جهت: اگه همون خانه بود، جهت عوض بشه
+  let dir = 'H';
+  if (activeCell && activeCell.r === r && activeCell.c === c) {
+    dir = activeCell.dir === 'H' ? 'V' : 'H';
+    // چک کن که توی این جهت واقعاً کلمه‌ای هست
+    if (!getWordAt(r, c, dir)) dir = activeCell.dir;
+  } else {
+    // جهت پیش‌فرض: اگه توی کلمه افقی هست، افقی، وگرنه عمودی
+    const wordH = getWordAt(r, c, 'H');
+    const wordV = getWordAt(r, c, 'V');
+    if (wordH) dir = 'H';
+    else if (wordV) dir = 'V';
+  }
+  
+  activeCell = { r, c, dir };
+  updateHighlight();
+  updateClue();
+}
+
+function getWordAt(r, c, dir) {
+  return WORD_DATA.find(w => {
+    if (w.dir !== dir) return false;
+    if (dir === 'H') {
+      return w.r === r && c >= w.c && c < w.c + w.word.length;
+    } else {
+      return w.c === c && r >= w.r && r < w.r + w.word.length;
     }
-    
-    row.forEach(letter => {
-      const key = document.createElement('button');
-      key.className = 'key';
-      key.textContent = letter;
-      key.dataset.letter = letter;
-      key.onclick = () => typeLetter(letter);
-      rowEl.appendChild(key);
-    });
-    
-    if (idx === 2) {
-      const del = document.createElement('button');
-      del.className = 'key wide delete';
-      del.textContent = '⌫';
-      del.onclick = deleteLetter;
-      rowEl.appendChild(del);
-    }
-    
-    keyboardEl.appendChild(rowEl);
   });
 }
 
-function highlightActiveCell() {
-  document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
-  if (currentRow < MAX_ATTEMPTS && currentCol < SIZE) {
-    const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
-    if (cell) cell.classList.add('active');
+function updateHighlight() {
+  document.querySelectorAll('.cell').forEach(c => {
+    c.classList.remove('active', 'highlight');
+  });
+  
+  if (!activeCell) return;
+  
+  const { r, c, dir } = activeCell;
+  const word = getWordAt(r, c, dir);
+  if (!word) return;
+  
+  // هایلایت کلمه
+  for (let i = 0; i < word.word.length; i++) {
+    const rr = dir === 'H' ? word.r : word.r + i;
+    const cc = dir === 'H' ? word.c + i : word.c;
+    const cell = document.querySelector(`.cell[data-r="${rr}"][data-c="${cc}"]`);
+    if (cell) cell.classList.add('highlight');
   }
+  
+  // خانه فعال
+  const active = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+  if (active) active.classList.add('active');
+}
+
+function updateClue() {
+  if (!activeCell) {
+    clueLabel.textContent = 'راهنما';
+    clueText.textContent = 'روی یک خانه کلیک کن';
+    clueInfo.textContent = '';
+    return;
+  }
+  
+  const { r, c, dir } = activeCell;
+  const word = getWordAt(r, c, dir);
+  if (!word) return;
+  
+  const num = cellNumbers[`${word.r}-${word.c}`] || '؟';
+  const dirName = dir === 'H' ? 'افقی' : 'عمودی';
+  clueLabel.textContent = `${dirName} — شماره ${toPersian(num)}`;
+  clueText.textContent = word.clue;
+  
+  const len = word.word.length;
+  clueInfo.textContent = `${toPersian(len)} حرف`;
 }
 
 function typeLetter(letter) {
-  if (!gameRunning) return;
-  if (currentCol >= SIZE) return;
+  if (!activeCell || !gameRunning) return;
   
   playTypeSound();
   vibrate(10);
   
-  currentGuess.push(letter);
-  const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
-  cell.textContent = letter;
-  cell.classList.add('filled');
-  currentCol++;
-  highlightActiveCell();
+  const { r, c, dir } = activeCell;
+  userGrid[r][c] = letter;
+  
+  const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+  if (cell) {
+    const charEl = cell.querySelector('span:last-child');
+    if (charEl) {
+      charEl.textContent = letter;
+      charEl.classList.remove('revealed');
+    }
+  }
+  
+  // حرکت به خانه بعدی
+  moveToNextCell();
+  updateProgress();
+  checkWin();
+}
+
+function moveToNextCell() {
+  if (!activeCell) return;
+  const { r, c, dir } = activeCell;
+  const word = getWordAt(r, c, dir);
+  if (!word) return;
+  
+  let nr = r, nc = c;
+  if (dir === 'H') nc++;
+  else nr++;
+  
+  // چک کن که توی همون کلمه هست
+  if (dir === 'H' && nc < word.c + word.word.length) {
+    activeCell = { r: nr, c: nc, dir };
+  } else if (dir === 'V' && nr < word.r + word.word.length) {
+    activeCell = { r: nr, c: nc, dir };
+  } else {
+    // برو به اولین خانه خالی بعدی
+    findNextEmptyCell();
+  }
+  
+  updateHighlight();
+  updateClue();
+}
+
+function findNextEmptyCell() {
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (grid[r][c] === 1 && !userGrid[r][c]) {
+        activeCell = { r, c, dir: 'H' };
+        return;
+      }
+    }
+  }
 }
 
 function deleteLetter() {
-  if (!gameRunning) return;
-  if (currentCol <= 0) return;
+  if (!activeCell || !gameRunning) return;
   
   playDeleteSound();
   vibrate(10);
   
-  currentCol--;
-  currentGuess.pop();
-  const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
-  cell.textContent = '';
-  cell.classList.remove('filled');
-  highlightActiveCell();
+  const { r, c } = activeCell;
+  
+  if (userGrid[r][c]) {
+    userGrid[r][c] = '';
+    const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    if (cell) {
+      const charEl = cell.querySelector('span:last-child');
+      if (charEl) charEl.textContent = '';
+    }
+  } else {
+    // برو به خانه قبلی
+    const word = getWordAt(r, c, activeCell.dir);
+    if (word) {
+      let pr = r, pc = c;
+      if (activeCell.dir === 'H') pc--;
+      else pr--;
+      if (pr >= word.r && pc >= word.c) {
+        activeCell = { r: pr, c: pc, dir: activeCell.dir };
+        updateHighlight();
+        updateClue();
+        deleteLetter();
+        return;
+      }
+    }
+  }
+  
+  updateProgress();
 }
 
-function submitGuess() {
-  if (!gameRunning) return;
-  if (currentCol < SIZE) {
-    showToast('کلمه باید ۵ حرف باشه!');
-    vibrate([20, 10, 20]);
-    boardWrap.classList.add('shake');
-    setTimeout(() => boardWrap.classList.remove('shake'), 300);
+function revealCell() {
+  if (!activeCell || !gameRunning) return;
+  
+  const { r, c } = activeCell;
+  if (revealedCells.has(`${r}-${c}`)) {
+    showToast('این خانه قبلاً راهنمایی شده!');
     return;
   }
   
-  const guess = currentGuess.join('');
-  playSubmitSound();
+  playTone(800, 0.15, 'sine', 0.15);
+  vibrate(25);
   
-  // بررسی حروف
-  const result = checkGuess(guess, secretWord);
+  userGrid[r][c] = solution[r][c];
+  revealedCells.add(`${r}-${c}`);
   
-  // نمایش نتیجه
-  result.forEach((status, i) => {
-    const cell = document.getElementById(`cell-${currentRow}-${i}`);
-    setTimeout(() => {
-      cell.classList.add(status);
-    }, i * 100);
-    
-    // بروزرسانی کیبورد
-    const letter = guess[i];
-    if (!keyStates[letter] || status === 'correct' || (status === 'present' && keyStates[letter] !== 'correct')) {
-      keyStates[letter] = status;
+  const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+  if (cell) {
+    const charEl = cell.querySelector('span:last-child');
+    if (charEl) {
+      charEl.textContent = solution[r][c];
+      charEl.classList.add('revealed');
     }
-  });
-  
-  // افکت صوتی
-  setTimeout(() => {
-    if (result.includes('correct')) playCorrectSound();
-    else playWrongSound();
-  }, SIZE * 100);
-  
-  // بروزرسانی کیبورد
-  updateKeyboardState();
-  
-  attempts.push({ guess, result });
-  currentRow++;
-  currentCol = 0;
-  currentGuess = [];
-  highlightActiveCell();
-  
-  // بررسی برد
-  if (guess === secretWord) {
-    setTimeout(() => win(), SIZE * 100 + 200);
-    return;
   }
   
-  // بررسی باخت
-  if (currentRow >= MAX_ATTEMPTS) {
-    setTimeout(() => lose(), SIZE * 100 + 300);
-    return;
-  }
-  
-  updateHint();
+  showToast('💡 یک حرف راهنمایی شد');
+  moveToNextCell();
+  updateProgress();
+  checkWin();
 }
 
-function checkGuess(guess, secret) {
-  const result = new Array(SIZE).fill('absent');
-  const secretChars = secret.split('');
-  const guessChars = guess.split('');
-  
-  // اول correct
-  for (let i = 0; i < SIZE; i++) {
-    if (guessChars[i] === secretChars[i]) {
-      result[i] = 'correct';
-      secretChars[i] = null;
+function updateProgress() {
+  let filled = 0, total = 0;
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (grid[r][c] === 1) {
+        total++;
+        if (userGrid[r][c]) filled++;
+      }
     }
   }
-  
-  // بعد present
-  for (let i = 0; i < SIZE; i++) {
-    if (result[i] === 'correct') continue;
-    const idx = secretChars.indexOf(guessChars[i]);
-    if (idx !== -1) {
-      result[i] = 'present';
-      secretChars[idx] = null;
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById('progress').textContent = toPersian(pct) + '٪';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function checkWin() {
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (grid[r][c] === 1 && userGrid[r][c] !== solution[r][c]) {
+        return false;
+      }
     }
   }
-  
-  return result;
-}
-
-function updateKeyboardState() {
-  document.querySelectorAll('.key').forEach(key => {
-    const letter = key.dataset.letter;
-    if (letter && keyStates[letter]) {
-      key.classList.remove('correct', 'present', 'absent');
-      key.classList.add(keyStates[letter]);
-    }
-  });
-}
-
-function updateHint() {
-  const remaining = MAX_ATTEMPTS - currentRow;
-  document.getElementById('hint').textContent = 
-    `تلاش ${toPersian(currentRow + 1)} از ${toPersian(MAX_ATTEMPTS)} — ${toPersian(remaining)} تلاش باقی`;
+  win();
+  return true;
 }
 
 function win() {
@@ -1076,33 +1199,19 @@ function win() {
   clearInterval(timerInterval);
   playWinSound();
   vibrate([50, 30, 50, 30, 100]);
-  addWin();
-  const isNewRecord = saveBest(currentRow);
   createConfetti();
   
-  document.getElementById('winWord').textContent = secretWord;
-  document.getElementById('winAttempts').textContent = toPersian(currentRow);
+  const isNewRecord = saveBest(seconds);
+  
   document.getElementById('winTime').textContent = formatTime(seconds);
   const best = getBest();
-  document.getElementById('winBest').textContent = best > 0 ? toPersian(best) : '۰';
+  document.getElementById('winBest').textContent = best > 0 ? formatTime(best) : '۰';
   
   setTimeout(() => document.getElementById('winOverlay').classList.remove('hidden'), 400);
 }
 
-function lose() {
-  gameRunning = false;
-  clearInterval(timerInterval);
-  playWrongSound();
-  vibrate([30, 20, 30]);
-  boardWrap.classList.add('shake');
-  setTimeout(() => boardWrap.classList.remove('shake'), 300);
-  
-  document.getElementById('loseWord').textContent = secretWord;
-  setTimeout(() => document.getElementById('loseOverlay').classList.remove('hidden'), 400);
-}
-
 function createConfetti() {
-  const colors = ['#15803d', '#ca8a04', '#b91c1c', '#1a1a1a', '#4a4a4a'];
+  const colors = ['#ca8a04', '#15803d', '#b91c1c', '#1a1a1a', '#4a4a4a'];
   for (let i = 0; i < 30; i++) {
     setTimeout(() => {
       const c = document.createElement('div');
@@ -1110,7 +1219,6 @@ function createConfetti() {
       c.style.background = colors[Math.floor(Math.random() * colors.length)];
       c.style.left = Math.random() * 100 + '%';
       c.style.top = '-20px';
-      c.style.transform = `rotate(${Math.random() * 360}deg)`;
       document.body.appendChild(c);
       
       const duration = 1500 + Math.random() * 1500;
@@ -1127,16 +1235,64 @@ function createConfetti() {
   }
 }
 
+function buildKeyboard() {
+  keyboardEl.innerHTML = '';
+  const rows = [
+    ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
+    ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
+    ['ظ','ط','ز','ر','ذ','د','پ','و','ژ'],
+  ];
+  
+  rows.forEach((row, idx) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kb-row';
+    
+    if (idx === 2) {
+      const rev = document.createElement('button');
+      rev.className = 'key reveal';
+      rev.textContent = '💡';
+      rev.onclick = revealCell;
+      rowEl.appendChild(rev);
+    }
+    
+    row.forEach(letter => {
+      const key = document.createElement('button');
+      key.className = 'key';
+      key.textContent = letter;
+      key.onclick = () => typeLetter(letter);
+      rowEl.appendChild(key);
+    });
+    
+    if (idx === 2) {
+      const del = document.createElement('button');
+      del.className = 'key delete';
+      del.textContent = '⌫';
+      del.onclick = deleteLetter;
+      rowEl.appendChild(del);
+    }
+    
+    keyboardEl.appendChild(rowEl);
+  });
+}
+
 function showToast(msg) {
   toastEl.textContent = msg;
   toastEl.classList.add('show');
   setTimeout(() => toastEl.classList.remove('show'), 1800);
 }
 
+function updateBest() {
+  const best = getBest();
+  document.getElementById('best').textContent = best > 0 ? formatTime(best) : '—';
+}
+
 function startTimer() {
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    if (gameRunning) seconds++;
+    if (gameRunning) {
+      seconds++;
+      document.getElementById('timer').textContent = formatTime(seconds);
+    }
   }, 1000);
 }
 
@@ -1155,7 +1311,7 @@ function closeAbout() { document.getElementById('aboutOverlay').classList.remove
 function syncToggles() {
   document.getElementById('soundToggle').classList.toggle('on', settings.sound);
   document.getElementById('vibeToggle').classList.toggle('on', settings.vibe);
-  document.getElementById('hintToggle').classList.toggle('on', settings.hint);
+  document.getElementById('autoHintToggle').classList.toggle('on', settings.autoHint);
 }
 
 function toggleSound() {
@@ -1168,17 +1324,18 @@ function toggleVibe() {
   syncToggles(); saveSettings();
   if (settings.vibe) vibrate(30);
 }
-function toggleHint() {
-  settings.hint = !settings.hint;
+function toggleAutoHint() {
+  settings.autoHint = !settings.autoHint;
   syncToggles(); saveSettings();
 }
 
 // ===== کیبورد فیزیکی =====
+const PERSIAN_LETTERS = ['ا','ب','پ','ت','ث','ج','چ','ح','خ','د','ذ','ر','ز','ژ','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ک','گ','ل','م','ن','و','ه','ی'];
 document.addEventListener('keydown', (e) => {
   if (!gameRunning) return;
-  if (e.key === 'Enter') { submitGuess(); e.preventDefault(); }
-  else if (e.key === 'Backspace') { deleteLetter(); e.preventDefault(); }
+  if (e.key === 'Backspace') { deleteLetter(); e.preventDefault(); }
   else if (PERSIAN_LETTERS.includes(e.key)) { typeLetter(e.key); e.preventDefault(); }
+  else if (e.key === ' ') { revealCell(); e.preventDefault(); }
 });
 
 // ===== ابزار =====
@@ -1189,6 +1346,7 @@ function toPersian(num) {
 // ===== شروع =====
 loadSettings();
 syncToggles();
+updateBest();
 </script>
 
 </body>
