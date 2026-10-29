@@ -3,24 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="version" content="15.0.0">
+<meta name="version" content="15.1.0">
 <meta name="author" content="امیررضا غلامی">
 <meta name="theme-color" content="#1E88E5">
-<title>جدولستان — نسخه ۱۵.۰.۰</title>
+<title>جدولستان — نسخه ۱۵.۱.۰</title>
 <style>
   :root {
     --bg-main: #0f172a;
-    --bg-card: #1e293b;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     
-    /* رنگ کاشی‌ها */
     --tile-empty: #334155;
     --tile-yellow: linear-gradient(135deg, #f59e0b, #d97706);
     --tile-blue: linear-gradient(135deg, #3b82f6, #2563eb);
     --tile-green: linear-gradient(135deg, #10b981, #059669);
     
-    /* سایه‌ها */
     --shadow-yellow: #b45309;
     --shadow-blue: #1d4ed8;
     --shadow-green: #047857;
@@ -34,30 +31,26 @@
   body {
     font-family: Tahoma, sans-serif;
     background-color: var(--bg-main);
-    /* افکت پس‌زمینه کهکشانی */
     background-image: 
       radial-gradient(circle at 15% 50%, rgba(59,130,246,0.15), transparent 25%),
       radial-gradient(circle at 85% 30%, rgba(16,185,129,0.15), transparent 25%);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
     color: var(--text-main);
-    overflow: hidden;
+    overflow-y: auto; /* اسکرول فعال شد */
+    display: flex;
+    justify-content: center;
   }
   
   .container {
     width: 100%;
     max-width: 440px;
-    height: 100vh;
-    max-height: 850px;
+    min-height: 100vh; /* حداقل به اندازه کل صفحه */
+    padding-bottom: 10px;
     display: flex;
     flex-direction: column;
-    position: relative;
   }
   
-  /* هدر (سکه و تنظیمات) */
+  /* هدر */
   .header {
     display: flex;
     justify-content: space-between;
@@ -66,7 +59,7 @@
     background: rgba(30, 41, 59, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 16px;
-    margin-bottom: 8px;
+    margin: 8px 8px 8px 8px;
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     flex-shrink: 0;
@@ -83,47 +76,22 @@
     box-shadow: 0 0 10px rgba(251,191,36,0.3);
   }
   
-  .coin-icon {
-    font-size: 18px;
-    animation: coinFloat 2s ease-in-out infinite;
-  }
+  .coin-icon { font-size: 18px; animation: coinFloat 2s ease-in-out infinite; }
+  @keyframes coinFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   
-  @keyframes coinFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-  }
-  
-  .coin-count {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--gold);
-    font-family: monospace;
-    text-shadow: 0 0 5px rgba(251,191,36,0.5);
-  }
+  .coin-count { font-size: 16px; font-weight: 900; color: var(--gold); font-family: monospace; }
   
   .add-coin {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--gold); color: #000;
-    border: none; font-size: 18px; font-weight: 900;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 3px 0 #b45309;
-    transition: 0.1s;
+    width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: #000;
+    border: none; font-size: 18px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 3px 0 #b45309; margin-right: 8px;
   }
   .add-coin:active { transform: translateY(2px); box-shadow: 0 1px 0 #b45309; }
   
-  .version-badge {
-    background: rgba(255,255,255,0.1);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: bold;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-  }
+  .version-badge { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 10px; color: var(--text-muted); }
   
   /* ناحیه بازی */
   .game-area {
-    flex: 1;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -132,9 +100,8 @@
     background: rgba(30, 41, 59, 0.4);
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 8px;
-    min-height: 0;
-    overflow: hidden;
+    margin: 0 8px 8px 8px;
+    padding: 10px 0;
   }
   
   /* تخته ۹x۹ */
@@ -142,14 +109,13 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
-    gap: 3px;
+    gap: 2px;
     width: 95%;
     max-width: 380px;
     aspect-ratio: 1;
-    padding: 8px;
-    background: rgba(0,0,0,0.2);
+    padding: 6px;
+    background: rgba(0,0,0,0.3);
     border-radius: 12px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
   }
   
   .cell {
@@ -158,64 +124,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
     color: #fff;
     position: relative;
     transition: all 0.2s;
-    user-select: none;
   }
   
-  .cell.hidden {
-    visibility: hidden;
-    pointer-events: none;
-  }
+  .cell.hidden { visibility: hidden; pointer-events: none; }
+  .cell.yellow { background: var(--tile-yellow); box-shadow: 0 2px 0 var(--shadow-yellow); }
+  .cell.blue { background: var(--tile-blue); box-shadow: 0 2px 0 var(--shadow-blue); }
+  .cell.green { background: var(--tile-green); box-shadow: 0 2px 0 var(--shadow-green); animation: pop 0.4s ease; }
+  .cell.active { transform: scale(1.1); z-index: 5; box-shadow: 0 0 10px #fff; border: 1px solid #fff; }
   
-  .cell.yellow {
-    background: var(--tile-yellow);
-    box-shadow: 0 2px 0 var(--shadow-yellow);
-  }
-  
-  .cell.blue {
-    background: var(--tile-blue);
-    box-shadow: 0 2px 0 var(--shadow-blue);
-  }
-  
-  .cell.green {
-    background: var(--tile-green);
-    box-shadow: 0 2px 0 var(--shadow-green);
-    animation: pop 0.4s ease;
-  }
-  
-  .cell.active {
-    transform: scale(1.1);
-    z-index: 5;
-    box-shadow: 0 0 15px #fff, 0 2px 0 var(--shadow-yellow);
-    border: 1px solid #fff;
-  }
-  
-  @keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
   
   /* حباب راهنما */
   .clue-bubble {
-    position: absolute;
-    background: #fff;
-    color: #000;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    z-index: 10;
-    pointer-events: none;
-    white-space: nowrap;
-    transform: translate(-50%, -100%);
-    opacity: 0;
-    transition: opacity 0.2s;
+    position: absolute; background: #fff; color: #000; padding: 6px 10px; border-radius: 8px;
+    font-size: 11px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 10;
+    pointer-events: none; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity 0.2s;
   }
   .clue-bubble.show { opacity: 1; }
   .clue-bubble::after {
@@ -228,110 +156,62 @@
     background: rgba(30, 41, 59, 0.9);
     padding: 8px 6px;
     border-radius: 16px;
-    flex-shrink: 0;
+    margin: 0 8px;
     border: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
   }
   
-  .keyboard {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  
-  .kb-row {
-    display: flex;
-    gap: 4px;
-    justify-content: center;
-  }
+  .keyboard { display: flex; flex-direction: column; gap: 4px; }
+  .kb-row { display: flex; gap: 3px; justify-content: center; }
   
   .key {
-    flex: 1;
-    height: 40px;
-    background: rgba(255,255,255,0.1);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Tahoma, sans-serif;
-    transition: 0.1s;
-    box-shadow: 0 3px 0 rgba(0,0,0,0.3);
+    flex: 1; height: 38px; background: rgba(255,255,255,0.1); border: none; border-radius: 6px;
+    color: #fff; font-size: 15px; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-family: Tahoma, sans-serif;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3); transition: 0.1s;
   }
   
-  .key:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
-    background: rgba(255,255,255,0.2);
-  }
+  .key:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(0,0,0,0.3); background: rgba(255,255,255,0.2); }
   
-  .key.action {
-    flex: 1.5;
-    font-size: 13px;
-    color: #fff;
-  }
+  .key.action { flex: 1.5; font-size: 12px; color: #fff; }
+  .key.delete { background: var(--danger); box-shadow: 0 2px 0 #991b1b; }
+  .key.hint { background: #8b5cf6; box-shadow: 0 2px 0 #5b21b6; }
   
-  .key.delete { background: var(--danger); box-shadow: 0 3px 0 #991b1b; }
-  .key.hint { background: #8b5cf6; box-shadow: 0 3px 0 #5b21b6; }
-  
-  /* صفحه شروع (جذاب و وسوسه‌انگیز) */
+  /* صفحه شروع */
   .start-overlay {
-    position: absolute; inset: 0;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(8px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center;
     z-index: 100; border-radius: 20px; text-align: center; padding: 20px;
   }
   .start-overlay.hidden { display: none; }
   
   .glowing-title {
-    font-size: 36px; font-weight: 900;
+    font-size: 34px; font-weight: 900;
     background: linear-gradient(to right, #fbbf24, #f59e0b, #fbbf24);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(251,191,36,0.5);
-    margin-bottom: 10px;
-    animation: glow 2s infinite alternate;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 10px; animation: glow 2s infinite alternate;
   }
+  @keyframes glow { from { filter: drop-shadow(0 0 5px rgba(251,191,36,0.5)); } to { filter: drop-shadow(0 0 15px rgba(251,191,36,1)); } }
   
-  @keyframes glow {
-    from { filter: drop-shadow(0 0 5px rgba(251,191,36,0.5)); }
-    to { filter: drop-shadow(0 0 20px rgba(251,191,36,1)); }
-  }
-  
-  .start-overlay p {
-    font-size: 14px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.8;
-  }
-  
-  .reward-box {
-    background: rgba(251,191,36,0.1);
-    border: 1px solid var(--gold);
-    padding: 10px 20px; border-radius: 12px; margin-bottom: 25px;
-    font-size: 12px; color: var(--gold);
-  }
+  .start-overlay p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.8; }
+  .reward-box { background: rgba(251,191,36,0.1); border: 1px solid var(--gold); padding: 8px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 11px; color: var(--gold); }
   
   .btn-start {
-    padding: 15px 50px;
-    background: linear-gradient(to bottom, #10b981, #059669);
-    border: none; border-radius: 50px; color: #fff;
-    font-size: 20px; font-weight: 900;
-    cursor: pointer; box-shadow: 0 6px 0 #047857, 0 10px 20px rgba(16,185,129,0.3);
-    transition: 0.1s; position: relative; overflow: hidden;
+    padding: 12px 40px; background: linear-gradient(to bottom, #10b981, #059669);
+    border: none; border-radius: 50px; color: #fff; font-size: 18px; font-weight: 900;
+    cursor: pointer; box-shadow: 0 5px 0 #047857; transition: 0.1s;
   }
-  .btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #047857; }
+  .btn-start:active { transform: translateY(3px); box-shadow: 0 2px 0 #047857; }
   
-  .author-credit { margin-top: 25px; font-size: 11px; color: var(--text-muted); }
+  .author-credit { margin-top: 20px; font-size: 10px; color: var(--text-muted); }
   .author-credit b { color: #fff; }
   
   /* Toast */
   .toast {
-    position: fixed; top: 10%; left: 50%; transform: translateX(-50%) translateY(-20px);
-    background: rgba(0,0,0,0.9); color: #fff; padding: 10px 20px; border-radius: 30px;
-    font-size: 13px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 200; pointer-events: none;
-    border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    position: fixed; top: 5%; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: rgba(0,0,0,0.9); color: #fff; padding: 8px 18px; border-radius: 30px;
+    font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 200; pointer-events: none;
+    border: 1px solid rgba(255,255,255,0.2);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -347,7 +227,7 @@
       </div>
       <button class="add-coin" onclick="addCoins(100)">+</button>
     </div>
-    <span class="version-badge">v15.0.0</span>
+    <span class="version-badge">v15.1.0</span>
   </div>
   
   <div class="game-area">
@@ -357,11 +237,7 @@
     <div class="start-overlay" id="startOverlay">
       <h1 class="glowing-title">جدولستان</h1>
       <p>جدول کلمات ۹×۹<br>مغزت رو به چالش بکش!</p>
-      
-      <div class="reward-box">
-        🎁 جایزه تکمیل جدول: <b>۵۰۰ سکه</b>
-      </div>
-      
+      <div class="reward-box">🎁 جایزه تکمیل: <b>۵۰۰ سکه</b></div>
       <button class="btn-start" onclick="startGame()">شروع بازی</button>
       <div class="author-credit">ساخته شده توسط <b>امیررضا غلامی</b></div>
     </div>
@@ -375,13 +251,11 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION = '15.0.0';
+const APP_VERSION = '15.1.0';
 const APP_AUTHOR = 'امیررضا غلامی';
 console.log(`جدولستان v${APP_VERSION} by ${APP_AUTHOR}`);
 
-// ===== داده‌های جدول ۹×۹ =====
 const WORDS = [
-  // افقی
   { word: 'کتاب', r: 0, c: 0, dir: 'H', clue: 'چیزی که می‌خوانیم' },
   { word: 'مادر', r: 0, c: 5, dir: 'H', clue: 'مهربان‌ترین زن' },
   { word: 'دریا', r: 2, c: 0, dir: 'H', clue: 'پهنه آب شور' },
@@ -390,7 +264,6 @@ const WORDS = [
   { word: 'دوست', r: 4, c: 6, dir: 'H', clue: 'رفیق و همدل' },
   { word: 'مدرسه', r: 6, c: 0, dir: 'H', clue: 'محل درس خواندن' },
   { word: 'ستاره', r: 8, c: 0, dir: 'H', clue: 'می‌درخشد در آسمان' },
-  // عمودی
   { word: 'کبوتر', r: 0, c: 0, dir: 'V', clue: 'پرنده‌ای که نامه می‌برد' },
   { word: 'مرد', r: 0, c: 5, dir: 'V', clue: 'مذکر انسان' },
   { word: 'کیسه', r: 0, c: 4, dir: 'V', clue: 'برای نگهداری پول' },
@@ -503,7 +376,6 @@ function selectCell(r, c) {
     el.style.filter = '';
   });
   
-  // هایلایت کلمه
   for (let i = 0; i < word.word.length; i++) {
     const rr = word.dir === 'H' ? word.r : word.r + i;
     const cc = word.dir === 'H' ? word.c + i : word.c;
@@ -652,11 +524,10 @@ function checkWord(word) {
     setTimeout(() => playTone(1200, 0.15, 'sine', 0.2), 100);
     
     wordsCompleted++;
-    if (wordsCompleted % 2 === 0) { // هر ۲ کلمه جایزه بده
+    if (wordsCompleted % 2 === 0) {
       addCoins(50);
       showToast('🎉 ۵۰ سکه جایزه بابت کلمات!');
     }
-    
     checkFullWin();
   }
 }
@@ -669,11 +540,10 @@ function checkFullWin() {
   }
   gameRunning = false;
   showToast('🏆 تبریک! جدول کامل شد');
-  addCoins(500); // جایزه بزرگ
+  addCoins(500);
   setTimeout(() => { document.getElementById('startOverlay').classList.remove('hidden'); }, 2500);
 }
 
-// ===== کیبورد =====
 function buildKeyboard() {
   const kb = document.getElementById('keyboard');
   kb.innerHTML = '';
